@@ -3,7 +3,7 @@ const { v4: uuid } = require("uuid");
 const words = ["Banana", "Canine", "Unosquare", "Airport"];
 const games = {};
 
-const retrieveWord = () => words[Math.floor(Math.random(words.length - 1))];
+const retrieveWord = () => words[Math.floor(Math.random() * words.length)];
 
 const clearUnmaskedWord = (game) => {
   const withoutUnmasked = {
@@ -59,10 +59,7 @@ function createGuess(req, res) {
   // todo: add logic for making a guess, modifying the game and updating the status
 
   const isLetterIncludedInWord = (letter, word) => {
-    if (word.includes(letter)) {
-      return true;
-    }
-    return false;
+    return word.includes(letter)
   };
 
   if (game.status !== "In Progress") {
@@ -81,11 +78,11 @@ function createGuess(req, res) {
     });
   }
   if (isLetterIncludedInWord(letter, game.unmaskedWord)) {
-    for (let i = 0; i < game.word.length; i++) {
+    for (let i = 0; i < game.unmaskedWord.length; i++) {
       //turn underscore into letter
       if (game.unmaskedWord[i] === letter) {
-        game.word.replace("_", letter);
-        console.log("corect letter ", letter);
+        game.word = game.word.substring(0,i) + letter + game.word.substring(i + 1);
+        
       }
     }
   }
@@ -104,7 +101,7 @@ function createGuess(req, res) {
   }
   // if status is WIN ()
   if (game.unmaskedWord === game.word && game.remainingGuesses > 0) {
-    //toUpperCase
+    
     return res.status(200).json({
       ...clearUnmaskedWord(game),
       status: "WIN",
@@ -118,10 +115,7 @@ function deleteGame(req, res) {
   const { gameId } = req.params;
   if (!gameId) return res.sendStatus(204);
 
-  var game = games[gameId];
-  if (!game) {
-    return res.sendStatus(204);
-  }
+  
 
   res.status(200).json(clearUnmaskedWord(game));
 }
