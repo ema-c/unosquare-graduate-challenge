@@ -1,12 +1,14 @@
 
 const gameController = require("../game");
+const {isLetterIncludedInWord} = require("../game")
 
 const mockId = 'fda56100-0ddb-4f06-9ea4-7c1919ff6d2f';
 jest.mock("uuid", () => ({ v4: () => mockId }));
 
+
 describe("game controller", () => {
   describe("createGame", () => {
-    xit("Should return identifier when game created", () => {
+    it("Should return identifier when game created", () => {
       const id = uuid();
       const req = {
       };
@@ -36,13 +38,13 @@ describe("game controller", () => {
           gameId: mockId
         },
         body:
-          { letter: "A" }
+          { letter: "a" }
       };
       const res = {
         send: jest.fn()
       };
 
-      req.body.letter="A";
+      req.body.letter="a";
       gameController.createGuess(req, res);
 
       expect(res.send).body.word.toBeEqual("_a_a_a")
@@ -52,21 +54,14 @@ describe("game controller", () => {
 
       expect(res.send).body.word.toBeEqual("Ba_a_a")
 
-      req.body.letter="n";
-      gameController.createGuess(req, res);
+      
 
     });
-    it("Should return the new game state", () => {
-      const req = {
-        body:
-           { letter: "A" }
-       };
-
-       const res = {
-         send: jest.fn()
-       };
-
-      gameController.createGuess(req, res);
+    it("Should return true if letter is included in the word", () => {
+      const word = "Banana";
+      const letter = "e";
+      const result = isLetterIncludedInWord(letter,word);
+      expect(result).toBe(false)
 
        expect(res.send).toHaveBeenCalledTimes(1);
        expect(res.send).toHaveBeenCalledWith(id);
