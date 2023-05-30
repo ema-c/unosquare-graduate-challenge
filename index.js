@@ -13,5 +13,5 @@ app.use(urlencoded({ extended: true }));
 app.post("/games", gamesController.createGame);
 app.get("/games/:gameId", gamesController.getGame);
 app.post("/games/:gameId/guesses", gamesController.createGuess);
-
+app.delete("games/:gameId", gamesController.deleteGame);
 app.listen(4567);
